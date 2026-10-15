@@ -144,6 +144,12 @@ However, relying on the average alone could be misleading because unusually long
 2. **Weekend usage:** Customers had a substantially larger share of trips on weekends.
 3. **Trip-level interpretation:** The dataset measures trips, not unique riders. Frequent users may contribute multiple observations.
 
+**Same-Station Trip Behavior**
+
+Customer trips were approximately **4.9 times more likely to start and end at the same station** than Subscriber trips (7.25% vs. 1.47%).
+Combined with longer trip durations and a higher weekend trip share, this finding supports the hypothesis that Customer trips are more frequently associated with recreational use.
+However, trip purpose is not directly recorded in the dataset, so this remains an interpretation rather than a confirmed explanation.
+
 **Conclusion:**
 
 Customer-category trips were typically longer than Subscriber-category trips, and a larger proportion occurred on weekends.
