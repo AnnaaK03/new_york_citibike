@@ -44,3 +44,23 @@ SELECT
 FROM `new_york_citibike.clean_trips_2015`
 GROUP BY usertype
 ORDER BY weekend_share_pct DESC;
+
+
+-- Compare same-station trip share by user type.
+
+SELECT
+  usertype,
+  COUNT(*) AS total_trips,
+  COUNTIF(
+    start_station_id = end_station_id
+  ) AS round_trips,
+  ROUND(
+    SAFE_DIVIDE(
+      COUNTIF(start_station_id = end_station_id),
+      COUNT(*)
+    ) * 100,
+    2
+  ) AS round_trip_share_pct
+FROM `new_york_citibike.clean_trips_2015`
+GROUP BY usertype
+ORDER BY round_trip_share_pct DESC;
