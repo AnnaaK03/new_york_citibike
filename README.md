@@ -4,9 +4,13 @@
 
 ## Overview
 
-This project explores approximately 9.94 million Citi Bike trips recorded in New York City in 2015, focusing on demand patterns, differences between customer types, and station activity.
+This project explores approximately 9.94 million Citi Bike trips recorded in New York City in 2015.
 
-I used Google BigQuery to validate and prepare the data, then built a two-page Power BI report to explore the results.
+The analysis focuses on one main question:
+
+**How does Citi Bike usage vary across time, user types, and stations?**
+
+I used Google BigQuery to explore and prepare the data, investigate usage patterns, and follow up on findings with additional analysis. I then built a two-page Power BI dashboard to present the results.
 
 ## Power BI Dashboard
 
@@ -14,62 +18,73 @@ I used Google BigQuery to validate and prepare the data, then built a two-page P
 
 ![Trip Demand & User Behavior](images/trip_demand.png)
 
-Explores monthly and hourly demand, customer types, trip duration, and differences between weekday and weekend activity.
+Explores seasonal and hourly demand, differences between Customers and Subscribers, trip duration, and weekday versus weekend activity.
 
 ### Routes & Station Activity
 
 ![Routes & Station Activity](images/station_activity.png)
 
-Shows the most frequent station pairs, station departures and arrivals, and differences between incoming and outgoing trip volumes.
+Examines frequently used station pairs, station-level departures and arrivals, and differences between incoming and outgoing trip volumes.
 
-## Customer vs Subscriber: Usage Patterns
+## Key Findings
 
-Subscribers accounted for 86.8% of all trips in 2015, while Customers represented 13.2%. I compared trip duration, weekend activity, and same-station trips to understand how usage differed between these groups.
+### 1. Different User Types, Different Usage Patterns
 
-| Metric | Customer | Subscriber |
-|---|---:|---:|
-| Average trip duration | 29.4 min | 12.8 min |
-| Median trip duration | 20.5 min | 9.6 min |
-| Weekend trip share | 43.42% | 20.42% |
-| Same-station trip share | 7.25% | 1.47% |
+Subscribers accounted for **86.8% of all trips**, but trip volume alone did not explain how the two groups used the service.
 
-*Trip duration metrics exclude trips longer than 24 hours.*
+I started by comparing trip duration. Customers took longer trips on average (**29.4 vs. 12.8 minutes**). To check whether this difference was driven mainly by unusually long rides, I also compared median durations. The difference remained substantial (**20.5 vs. 9.6 minutes**).
 
-### What stood out
+This raised another question: **could the two groups be using Citi Bike for different purposes?**
 
-Customers took longer trips on average, but I also checked the median to see whether the difference was limited to unusually long rides. The median remained substantially higher for Customers.
+I explored this by looking at weekend activity. Weekend trips accounted for **43.42% of Customer trips**, compared with **20.42% for Subscribers**.
 
-Weekend trips accounted for 43.42% of Customer activity, compared with 20.42% for Subscribers. Customers were also nearly five times more likely to start and end a trip at the same station.
+I also examined trips that started and ended at the same station. These were nearly five times more common among Customers, adding another indication of different usage patterns.
 
-Together, these patterns suggest more leisure-oriented use among Customers and more routine travel among Subscribers. However, trip purpose is not recorded in the dataset, so this remains an interpretation rather than a confirmed fact.
+Together, these findings suggest more leisure-oriented usage among Customers and more routine travel among Subscribers. Since trip purpose is not recorded, this remains an interpretation rather than a confirmed explanation.
 
-## Other Findings
+### 2. Demand Patterns Across Time
 
-**Seasonal demand**
+Trip demand varied considerably throughout the year. September recorded approximately **1.29 million trips**, compared with around **197,000 in February**.
 
-Trip volume varied considerably throughout the year. September recorded approximately 1.29 million trips, compared with about 197,000 in February. These are monthly totals and are not adjusted for the different number of days in each month.
+I then examined hourly demand to understand how activity differed between weekdays and weekends.
 
-**Weekday and weekend patterns**
+Weekdays showed clear morning and evening peaks, while weekend trips were more concentrated during the daytime.
 
-Weekday demand showed peaks around 8 AM and 5–6 PM, while weekend activity was more concentrated during the daytime. To make the hourly comparison fair, weekday and weekend volumes were normalized by the number of days in each group.
+To make this comparison meaningful, I normalized hourly trip counts by the number of weekdays and weekend days rather than comparing raw totals.
 
-**Station activity**
+These patterns show that demand differs not only across months but also throughout the week.
 
-I compared station departures and arrivals using Net Flow (arrivals minus departures). This highlights stations where recorded incoming and outgoing trip volumes differ. It does not directly measure bike availability or prove that a station requires rebalancing.
+### 3. Routes and Station Activity
 
-## Data Preparation & Limitations
+I explored frequently used station pairs and compared trip activity across stations.
 
-Data preparation and analysis were performed in Google BigQuery.
+The route analysis also included trips that started and ended at the same station, providing another perspective on the usage patterns examined earlier.
+
+At the station level, I compared recorded arrivals and departures using:
+
+**Net Flow = Arrivals − Departures**
+
+This helped identify stations with differences between incoming and outgoing trip volumes.
+
+Net Flow describes recorded trip activity, not actual bicycle availability. It does not account for operational bike movements and therefore cannot independently establish whether a station needs rebalancing.
+
+## Data Preparation & Methodology
+
+Data exploration and preparation were performed using SQL in Google BigQuery.
 
 - Checked missing values, duplicate records, trip durations, and timestamp consistency.
-- Created `clean_trips_2015` with additional date and time fields for analysis.
-- Built `routes_2015` and `station_flow_2015` for route and station-level reporting.
-- Retained unusually long trips in overall trip counts but excluded trips longer than 24 hours from duration comparisons.
+- Created `clean_trips_2015` with additional date and time fields.
+- Built `routes_2015` and `station_flow_2015` for route and station-level analysis.
+- Retained flagged records in overall trip counts rather than automatically removing unusual trips.
+- Excluded trips longer than 24 hours from duration comparisons.
 - Used station IDs to identify stations and station pairs.
+- Normalized weekday and weekend hourly demand by the corresponding number of calendar days.
 
-The prepared trip table retains flagged records rather than automatically removing every anomaly.
+### Limitations
 
-The dataset records trips, not unique riders. It does not establish why a trip was taken, and station-level trip flows do not represent real-time bike inventory.
+The dataset represents trips, not unique riders, and does not identify trip purpose.
+
+The analysis is based on historical data from 2015 and does not include external factors such as weather or operational bike movements. These limitations should be considered when interpreting the findings or applying them to operational decisions.
 
 ## Repository Structure
 
